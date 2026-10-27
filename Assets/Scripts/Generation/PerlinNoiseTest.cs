@@ -62,9 +62,6 @@ public class PerlinNoiseTest : MonoBehaviour
     // Unity explicitly states PerlinNoise might return a value below 0 or above 1 so clamp it
     float Perlin01(float x, float y) => Mathf.Clamp01(Mathf.PerlinNoise(x, y));
 
-    // PerlinNoise gives the same output for x and y coordinate every time so apply an offset to each to randomise it
-    float RandomPerlin(float x, float y) => Perlin01(x + m_OffsetX, y + m_OffsetY);
-
     // Terrain height in range [m_TerrainLowest, m_TerrainHeighest], as int so square like minecraft
     // Also use layered perlin noise for smoother terrain
     int TerrainHeight(int x, int y)
@@ -75,7 +72,7 @@ public class PerlinNoiseTest : MonoBehaviour
         {
             float sampleX = x / s_ZoomScale * frequency + m_OffsetX;
             float sampleY = y / s_ZoomScale * frequency + m_OffsetY;
-            float perlin = RandomPerlin(sampleX, sampleY);
+            float perlin = Perlin01(sampleX, sampleY);
             noise += perlin * amplitude;
             maxPossibleHeight += amplitude;
             amplitude *= m_Persistence;
