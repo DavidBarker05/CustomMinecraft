@@ -81,19 +81,18 @@ public class World : MonoBehaviour
 
     public static Vector3Int IntCoord(Vector3 coord) => Vector3Int.FloorToInt(coord);
 
-    public Chunk GetChunk(Vector3 coord)
+    public Chunk GetChunk(Vector3Int intCoord)
     {
-        Vector3Int intCoord = IntCoord(coord);
-        int x = (Mathf.Clamp(intCoord.x, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
-        int z = (Mathf.Clamp(intCoord.z, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
+        int x = (intCoord.x + m_WorldHalfSize) / m_ChunkSize;
+        int z = (intCoord.z + m_WorldHalfSize) / m_ChunkSize;
+        if (x < 0 || z < 0 || x >= m_NumChunksOneAxis || z >= m_NumChunksOneAxis) return null;
         return m_Chunks[x, z];
     }
 
-    public Chunk GetChunk(Vector3Int intCoord)
+    public Chunk GetChunk(Vector3 coord)
     {
-        int x = (Mathf.Clamp(intCoord.x, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
-        int z = (Mathf.Clamp(intCoord.z, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
-        return m_Chunks[x, z];
+        Vector3Int intCoord = IntCoord(coord);
+        return GetChunk(intCoord);
     }
 
     // Initialise the random seed as well as the offsets used in generation

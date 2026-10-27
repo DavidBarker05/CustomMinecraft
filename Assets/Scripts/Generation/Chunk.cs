@@ -55,6 +55,15 @@ public class Chunk : MonoBehaviour
         m_Blocks[chunkCoord.x, chunkCoord.y, chunkCoord.z] = block;
     }
 
+    public BlockData GetBlock(Vector3Int coord)
+    {
+        Vector3Int chunkCoord = ToChunkCoord(coord);
+        if (chunkCoord.x < 0 || chunkCoord.x >= m_ChunkSize) return null;
+        if (chunkCoord.y < 0 || chunkCoord.y >= m_MaxHeight - m_MinHeight + 1) return null;
+        if (chunkCoord.z < 0 || chunkCoord.z >= m_ChunkSize) return null;
+        return m_Blocks[chunkCoord.x, chunkCoord.y, chunkCoord.z];
+    }
+
     void UpdateMesh()
     {
         m_Mesh.Clear();
@@ -128,51 +137,109 @@ public class Chunk : MonoBehaviour
         }
     }
 
+    void GenerateFacePosZ(int x, int worldY, int z, ref List<Vector3> vertices, ref List<int> triangles)
+    {
+        Vector3 v101 = new Vector3(x + 1, worldY, z + 1);
+        Vector3 v111 = new Vector3(x + 1, worldY + 1, z + 1);
+        Vector3 v011 = new Vector3(x, worldY + 1, z + 1);
+        Vector3 v001 = new Vector3(x, worldY, z + 1);
+        int i101;
+        if (vertices.Contains(v101)) i101 = vertices.IndexOf(v101);
+        else
+        {
+            i101 = vertices.Count;
+            vertices.Add(v101);
+        }
+        int i111;
+        if (vertices.Contains(v111)) i111 = vertices.IndexOf(v111);
+        else
+        {
+            i111 = vertices.Count;
+            vertices.Add(v111);
+        }
+        int i011;
+        if (vertices.Contains(v011)) i011 = vertices.IndexOf(v011);
+        else
+        {
+            i011 = vertices.Count;
+            vertices.Add(v011);
+        }
+        int i001;
+        if (vertices.Contains(v001)) i001 = vertices.IndexOf(v001);
+        else
+        {
+            i001 = vertices.Count;
+            vertices.Add(v001);
+        }
+        triangles.Add(i101);
+        triangles.Add(i111);
+        triangles.Add(i011);
+        triangles.Add(i101);
+        triangles.Add(i011);
+        triangles.Add(i001);
+    }
+
     void BlockPosZ(int x, int y, int z, ref List<Vector3> vertices, ref List<int> triangles)
     {
         int worldY = y + m_MinHeight;
         if (z < m_ChunkSize - 1)
         {
             if (m_Blocks[x, y, z + 1]) return; // Not exposed
-            Vector3 v101 = new Vector3(x + 1, worldY, z + 1);
-            Vector3 v111 = new Vector3(x + 1, worldY + 1, z + 1);
-            Vector3 v011 = new Vector3(x, worldY + 1, z + 1);
-            Vector3 v001 = new Vector3(x, worldY, z + 1);
-            int i101;
-            if (vertices.Contains(v101)) i101 = vertices.IndexOf(v101);
-            else
-            {
-                i101 = vertices.Count;
-                vertices.Add(v101);
-            }
-            int i111;
-            if (vertices.Contains(v111)) i111 = vertices.IndexOf(v111);
-            else
-            {
-                i111 = vertices.Count;
-                vertices.Add(v111);
-            }
-            int i011;
-            if (vertices.Contains(v011)) i011 = vertices.IndexOf(v011);
-            else
-            {
-                i011 = vertices.Count;
-                vertices.Add(v011);
-            }
-            int i001;
-            if (vertices.Contains(v001)) i001 = vertices.IndexOf(v001);
-            else
-            {
-                i001 = vertices.Count;
-                vertices.Add(v001);
-            }
-            triangles.Add(i101);
-            triangles.Add(i111);
-            triangles.Add(i011);
-            triangles.Add(i101);
-            triangles.Add(i011);
-            triangles.Add(i001);
+            GenerateFacePosZ(x, worldY, z, ref vertices, ref triangles);
         }
+        else
+        {
+            Vector3Int adjacentCoord = new Vector3Int(m_StartX + x, worldY, m_StartZ + z + 1);
+            Chunk adjacentChunk = World.Instance.GetChunk(adjacentCoord);
+            if (!adjacentChunk) GenerateFacePosZ(x, worldY, z, ref vertices, ref triangles);
+            else
+            {
+                BlockData adjacentBlock = adjacentChunk.GetBlock(adjacentCoord);
+                if (!adjacentBlock) GenerateFacePosZ(x, worldY, z, ref vertices, ref triangles);
+            }
+        }
+    }
+
+    void GenerateFacePosX(int x, int worldY, int z, ref List<Vector3> vertices, ref List<int> triangles)
+    {
+        Vector3 v100 = new Vector3(x + 1, worldY, z);
+        Vector3 v110 = new Vector3(x + 1, worldY + 1, z);
+        Vector3 v111 = new Vector3(x + 1, worldY + 1, z + 1);
+        Vector3 v101 = new Vector3(x + 1, worldY, z + 1);
+        int i100;
+        if (vertices.Contains(v100)) i100 = vertices.IndexOf(v100);
+        else
+        {
+            i100 = vertices.Count;
+            vertices.Add(v100);
+        }
+        int i110;
+        if (vertices.Contains(v110)) i110 = vertices.IndexOf(v110);
+        else
+        {
+            i110 = vertices.Count;
+            vertices.Add(v110);
+        }
+        int i111;
+        if (vertices.Contains(v111)) i111 = vertices.IndexOf(v111);
+        else
+        {
+            i111 = vertices.Count;
+            vertices.Add(v111);
+        }
+        int i101;
+        if (vertices.Contains(v101)) i101 = vertices.IndexOf(v101);
+        else
+        {
+            i101 = vertices.Count;
+            vertices.Add(v101);
+        }
+        triangles.Add(i100);
+        triangles.Add(i110);
+        triangles.Add(i111);
+        triangles.Add(i100);
+        triangles.Add(i111);
+        triangles.Add(i101);
     }
 
     void BlockPosX(int x, int y, int z, ref List<Vector3> vertices, ref List<int> triangles)
@@ -181,45 +248,61 @@ public class Chunk : MonoBehaviour
         if (x < m_ChunkSize - 1)
         {
             if (m_Blocks[x + 1, y, z]) return; // Not exposed
-            Vector3 v100 = new Vector3(x + 1, worldY, z);
-            Vector3 v110 = new Vector3(x + 1, worldY + 1, z);
-            Vector3 v111 = new Vector3(x + 1, worldY + 1, z + 1);
-            Vector3 v101 = new Vector3(x + 1, worldY, z + 1);
-            int i100;
-            if (vertices.Contains(v100)) i100 = vertices.IndexOf(v100);
-            else
-            {
-                i100 = vertices.Count;
-                vertices.Add(v100);
-            }
-            int i110;
-            if (vertices.Contains(v110)) i110 = vertices.IndexOf(v110);
-            else
-            {
-                i110 = vertices.Count;
-                vertices.Add(v110);
-            }
-            int i111;
-            if (vertices.Contains(v111)) i111 = vertices.IndexOf(v111);
-            else
-            {
-                i111 = vertices.Count;
-                vertices.Add(v111);
-            }
-            int i101;
-            if (vertices.Contains(v101)) i101 = vertices.IndexOf(v101);
-            else
-            {
-                i101 = vertices.Count;
-                vertices.Add(v101);
-            }
-            triangles.Add(i100);
-            triangles.Add(i110);
-            triangles.Add(i111);
-            triangles.Add(i100);
-            triangles.Add(i111);
-            triangles.Add(i101);
+            GenerateFacePosX(x, worldY, z, ref vertices, ref triangles);
         }
+        else
+        {
+            Vector3Int adjacentCoord = new Vector3Int(m_StartX + x + 1, worldY, m_StartZ + z);
+            Chunk adjacentChunk = World.Instance.GetChunk(adjacentCoord);
+            if (!adjacentChunk) GenerateFacePosX(x, worldY, z, ref vertices, ref triangles);
+            else
+            {
+                BlockData adjacentBlock = adjacentChunk.GetBlock(adjacentCoord);
+                if (!adjacentBlock) GenerateFacePosX(x, worldY, z, ref vertices, ref triangles);
+            }
+        }
+    }
+
+    void GenerateFaceNegZ(int x, int worldY, int z, ref List<Vector3> vertices, ref List<int> triangles)
+    {
+        Vector3 v000 = new Vector3(x, worldY, z);
+        Vector3 v010 = new Vector3(x, worldY + 1, z);
+        Vector3 v110 = new Vector3(x + 1, worldY + 1, z);
+        Vector3 v100 = new Vector3(x + 1, worldY, z);
+        int i000;
+        if (vertices.Contains(v000)) i000 = vertices.IndexOf(v000);
+        else
+        {
+            i000 = vertices.Count;
+            vertices.Add(v000);
+        }
+        int i010;
+        if (vertices.Contains(v010)) i010 = vertices.IndexOf(v010);
+        else
+        {
+            i010 = vertices.Count;
+            vertices.Add(v010);
+        }
+        int i110;
+        if (vertices.Contains(v110)) i110 = vertices.IndexOf(v110);
+        else
+        {
+            i110 = vertices.Count;
+            vertices.Add(v110);
+        }
+        int i100;
+        if (vertices.Contains(v100)) i100 = vertices.IndexOf(v100);
+        else
+        {
+            i100 = vertices.Count;
+            vertices.Add(v100);
+        }
+        triangles.Add(i000);
+        triangles.Add(i010);
+        triangles.Add(i110);
+        triangles.Add(i000);
+        triangles.Add(i110);
+        triangles.Add(i100);
     }
 
     void BlockNegZ(int x, int y, int z, ref List<Vector3> vertices, ref List<int> triangles)
@@ -228,45 +311,61 @@ public class Chunk : MonoBehaviour
         if (z > 0)
         {
             if (m_Blocks[x, y, z - 1]) return; // Not exposed
-            Vector3 v000 = new Vector3(x, worldY, z);
-            Vector3 v010 = new Vector3(x, worldY + 1, z);
-            Vector3 v110 = new Vector3(x + 1, worldY + 1, z);
-            Vector3 v100 = new Vector3(x + 1, worldY, z);
-            int i000;
-            if (vertices.Contains(v000)) i000 = vertices.IndexOf(v000);
-            else
-            {
-                i000 = vertices.Count;
-                vertices.Add(v000);
-            }
-            int i010;
-            if (vertices.Contains(v010)) i010 = vertices.IndexOf(v010);
-            else
-            {
-                i010 = vertices.Count;
-                vertices.Add(v010);
-            }
-            int i110;
-            if (vertices.Contains(v110)) i110 = vertices.IndexOf(v110);
-            else
-            {
-                i110 = vertices.Count;
-                vertices.Add(v110);
-            }
-            int i100;
-            if (vertices.Contains(v100)) i100 = vertices.IndexOf(v100);
-            else
-            {
-                i100 = vertices.Count;
-                vertices.Add(v100);
-            }
-            triangles.Add(i000);
-            triangles.Add(i010);
-            triangles.Add(i110);
-            triangles.Add(i000);
-            triangles.Add(i110);
-            triangles.Add(i100);
+            GenerateFaceNegZ(x, worldY, z, ref vertices, ref triangles);
         }
+        else
+        {
+            Vector3Int adjacentCoord = new Vector3Int(m_StartX + x, worldY, m_StartZ + z - 1);
+            Chunk adjacentChunk = World.Instance.GetChunk(adjacentCoord);
+            if (!adjacentChunk) GenerateFaceNegZ(x, worldY, z, ref vertices, ref triangles);
+            else
+            {
+                BlockData adjacentBlock = adjacentChunk.GetBlock(adjacentCoord);
+                if (!adjacentBlock) GenerateFaceNegZ(x, worldY, z, ref vertices, ref triangles);
+            }
+        }
+    }
+
+    void GenerateFaceNegX(int x, int worldY, int z, ref List<Vector3> vertices, ref List<int> triangles)
+    {
+        Vector3 v001 = new Vector3(x, worldY, z + 1);
+        Vector3 v011 = new Vector3(x, worldY + 1, z + 1);
+        Vector3 v010 = new Vector3(x, worldY + 1, z);
+        Vector3 v000 = new Vector3(x, worldY, z);
+        int i001;
+        if (vertices.Contains(v001)) i001 = vertices.IndexOf(v001);
+        else
+        {
+            i001 = vertices.Count;
+            vertices.Add(v001);
+        }
+        int i011;
+        if (vertices.Contains(v011)) i011 = vertices.IndexOf(v011);
+        else
+        {
+            i011 = vertices.Count;
+            vertices.Add(v011);
+        }
+        int i010;
+        if (vertices.Contains(v010)) i010 = vertices.IndexOf(v010);
+        else
+        {
+            i010 = vertices.Count;
+            vertices.Add(v010);
+        }
+        int i000;
+        if (vertices.Contains(v000)) i000 = vertices.IndexOf(v000);
+        else
+        {
+            i000 = vertices.Count;
+            vertices.Add(v000);
+        }
+        triangles.Add(i001);
+        triangles.Add(i011);
+        triangles.Add(i010);
+        triangles.Add(i001);
+        triangles.Add(i010);
+        triangles.Add(i000);
     }
 
     void BlockNegX(int x, int y, int z, ref List<Vector3> vertices, ref List<int> triangles)
@@ -275,44 +374,18 @@ public class Chunk : MonoBehaviour
         if (x > 0)
         {
             if (m_Blocks[x - 1, y, z]) return; // Not exposed
-            Vector3 v001 = new Vector3(x, worldY, z + 1);
-            Vector3 v011 = new Vector3(x, worldY + 1, z + 1);
-            Vector3 v010 = new Vector3(x, worldY + 1, z);
-            Vector3 v000 = new Vector3(x, worldY, z);
-            int i001;
-            if (vertices.Contains(v001)) i001 = vertices.IndexOf(v001);
+            GenerateFaceNegX(x, worldY, z, ref vertices, ref triangles);
+        }
+        else
+        {
+            Vector3Int adjacentCoord = new Vector3Int(m_StartX + x - 1, worldY, m_StartZ + z);
+            Chunk adjacentChunk = World.Instance.GetChunk(adjacentCoord);
+            if (!adjacentChunk) GenerateFaceNegX(x, worldY, z, ref vertices, ref triangles);
             else
             {
-                i001 = vertices.Count;
-                vertices.Add(v001);
+                BlockData adjacentBlock = adjacentChunk.GetBlock(adjacentCoord);
+                if (!adjacentBlock) GenerateFaceNegX(x, worldY, z, ref vertices, ref triangles);
             }
-            int i011;
-            if (vertices.Contains(v011)) i011 = vertices.IndexOf(v011);
-            else
-            {
-                i011 = vertices.Count;
-                vertices.Add(v011);
-            }
-            int i010;
-            if (vertices.Contains(v010)) i010 = vertices.IndexOf(v010);
-            else
-            {
-                i010 = vertices.Count;
-                vertices.Add(v010);
-            }
-            int i000;
-            if (vertices.Contains(v000)) i000 = vertices.IndexOf(v000);
-            else
-            {
-                i000 = vertices.Count;
-                vertices.Add(v000);
-            }
-            triangles.Add(i001);
-            triangles.Add(i011);
-            triangles.Add(i010);
-            triangles.Add(i001);
-            triangles.Add(i010);
-            triangles.Add(i000);
         }
     }
 
