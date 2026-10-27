@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CharacterSettings", menuName = "Player/Character Settings")]
 public class CharacterSettings : ScriptableObject
 {
+    [field: Header("Movement")]
     [field: SerializeField]
     public bool CanSprintInAir { get; private set; } = true;
     [field: SerializeField, Min(1f)]
@@ -17,6 +18,12 @@ public class CharacterSettings : ScriptableObject
     public float JumpBuffer { get; private set; } = 0.125f;
     [field: SerializeField, Range(0f, 1f)]
     public float CoyoteTime { get; private set; } = 0.1f;
+
+    [field: Header("Mining and Placing")]
+    [field: SerializeField]
+    public LayerMask WorldLayer { get; private set; }
+    [field: SerializeField, Min(0.001f)]
+    public float MiningDistance { get; private set; } = 7f;
 
     public float Gravity { get; private set; }
     public float PosGravity { get; private set; }

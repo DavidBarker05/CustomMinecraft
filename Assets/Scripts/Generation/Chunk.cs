@@ -70,7 +70,7 @@ public class Chunk : MonoBehaviour
         return m_Blocks[chunkCoord.x, chunkCoord.y, chunkCoord.z];
     }
 
-    void UpdateMesh()
+    public void UpdateMesh()
     {
         m_Mesh.Clear();
         m_MeshCollider.sharedMesh = null;

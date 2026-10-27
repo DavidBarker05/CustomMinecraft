@@ -19,3 +19,7 @@ MonoBehaviour:
   <TimeToReachJumpHeight>k__BackingField: 0.25
   <JumpBuffer>k__BackingField: 0.05
   <CoyoteTime>k__BackingField: 0.05
+  <WorldLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 1
+  <MiningDistance>k__BackingField: 7

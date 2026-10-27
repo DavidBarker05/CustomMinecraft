@@ -148,5 +148,10 @@ public class Player : MonoBehaviour
     {
         SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData => updateData.JumpPressedThisFrame = ctx.action.WasPressedThisFrame());
     }
+
+    public void HandleBreakInput(InputAction.CallbackContext ctx)
+    {
+        SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData => updateData.BreakPressedThisFrame = ctx.action.WasPressedThisFrame());
+    }
     #endregion Handle PlayerInput Events
 }

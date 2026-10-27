@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 public class FirstPersonPlayerCharacterInitData : IPlayerCharacterInitData
@@ -19,6 +17,8 @@ public class FirstPersonPlayerCharacterUpdateData : IPlayerCharacterUpdateData
     public Vector2 MovementInput { get; set; }
     public bool JumpPressedThisFrame { get; set; }
     public bool SprintPressedThisFrame { get; set; }
+
+    public bool BreakPressedThisFrame { get; set; }
     #endregion Input
 
     #region Output
@@ -59,6 +59,11 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     public override bool MouseVisible => false;
     public override bool DoCameraRotation => true;
 
+    bool m_bCurrentBlockCoordSet = false;
+    Vector3Int m_CurrentBlockCoord;
+    BlockData m_CurrentBlockData;
+    float m_CurrentBreakTime = 0f;
+
     PausePlayerCharacter m_PausePlayerCharacter;
 
     public override void Init(IPlayerCharacterInitData playerCharacterInitData)
@@ -88,6 +93,25 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
         if (playerCharacterUpdateData is FirstPersonPlayerCharacterUpdateData updateData)
         {
             HandleMovement(ref updateData);
+            if (m_bCurrentBlockCoordSet && m_CurrentBlockData)
+            {
+                if (m_CurrentBlockData.Breakable)
+                {
+                    m_CurrentBreakTime += updateData.DeltaTime;
+                    if (m_CurrentBreakTime >= m_CurrentBlockData.BreakTime)
+                    {
+                        World.Instance.BreakBlock(m_CurrentBlockCoord);
+                        m_bCurrentBlockCoordSet = false;
+                        m_CurrentBreakTime = 0f;
+                    }
+                }
+            }
+            if (updateData.BreakPressedThisFrame) HandleMining();
+            else if (m_bCurrentBlockCoordSet)
+            {
+                m_bCurrentBlockCoordSet = false;
+                m_CurrentBreakTime = 0f;
+            }
         }
         else
         {
@@ -207,4 +231,35 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     }
     #endregion Update Vertical Velocity
     #endregion Movement
+
+    #region Mining and Placing
+    #region Mining
+    void HandleMining()
+    {
+        if (Physics.Raycast(
+            origin: m_Camera.transform.position,
+            direction: m_Camera.transform.forward,
+            hitInfo: out RaycastHit hitInfo,
+            maxDistance: m_CharacterSettings.MiningDistance,
+            layerMask: m_CharacterSettings.WorldLayer
+        ))
+        {
+            Vector3Int blockCoord = World.IntCoord(hitInfo.point - hitInfo.normal * 0.01f);
+            if (!m_bCurrentBlockCoordSet || m_CurrentBlockCoord != blockCoord)
+            {
+                m_bCurrentBlockCoordSet = true;
+                m_CurrentBlockCoord = blockCoord;
+                m_CurrentBreakTime = 0f;
+                Chunk chunk = World.Instance.GetChunk(m_CurrentBlockCoord);
+                if (chunk) m_CurrentBlockData = chunk.GetBlock(m_CurrentBlockCoord);
+            }
+        }
+        else
+        {
+            m_bCurrentBlockCoordSet = false;
+            m_CurrentBreakTime = 0f;
+        }
+    }
+    #endregion Mining
+    #endregion Mining and Placing
 }
