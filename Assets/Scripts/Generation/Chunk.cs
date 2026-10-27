@@ -103,38 +103,18 @@ public class Chunk : MonoBehaviour
             Vector3 v111 = new Vector3(x + 1, worldY + 1, z + 1);
             Vector3 v110 = new Vector3(x + 1, worldY + 1, z);
             BlockData data = m_Blocks[x, y, z];
-            int i010;
-            if (vertices.Contains(v010)) i010 = vertices.IndexOf(v010);
-            else
-            {
-                i010 = vertices.Count;
-                vertices.Add(v010);
-                colors.Add(data.Color);
-            }
-            int i011;
-            if (vertices.Contains(v011)) i011 = vertices.IndexOf(v011);
-            else
-            {
-                i011 = vertices.Count;
-                vertices.Add(v011);
-                colors.Add(data.Color);
-            }
-            int i111;
-            if (vertices.Contains(v111)) i111 = vertices.IndexOf(v111);
-            else
-            {
-                i111 = vertices.Count;
-                vertices.Add(v111);
-                colors.Add(data.Color);
-            }
-            int i110;
-            if (vertices.Contains(v110)) i110 = vertices.IndexOf(v110);
-            else
-            {
-                i110 = vertices.Count;
-                vertices.Add(v110);
-                colors.Add(data.Color);
-            }
+            int i010 = vertices.Count;
+            vertices.Add(v010);
+            colors.Add(data.Color);
+            int i011 = vertices.Count;
+            vertices.Add(v011);
+            colors.Add(data.Color);
+            int i111 = vertices.Count;
+            vertices.Add(v111);
+            colors.Add(data.Color);
+            int i110 = vertices.Count;
+            vertices.Add(v110);
+            colors.Add(data.Color);
             triangles.Add(i010);
             triangles.Add(i011);
             triangles.Add(i111);
@@ -152,38 +132,18 @@ public class Chunk : MonoBehaviour
         Vector3 v011 = new Vector3(x, worldY + 1, z + 1);
         Vector3 v001 = new Vector3(x, worldY, z + 1);
         BlockData data = m_Blocks[x, y, z];
-        int i101;
-        if (vertices.Contains(v101)) i101 = vertices.IndexOf(v101);
-        else
-        {
-            i101 = vertices.Count;
-            vertices.Add(v101);
-            colors.Add(data.Color);
-        }
-        int i111;
-        if (vertices.Contains(v111)) i111 = vertices.IndexOf(v111);
-        else
-        {
-            i111 = vertices.Count;
-            vertices.Add(v111);
-            colors.Add(data.Color);
-        }
-        int i011;
-        if (vertices.Contains(v011)) i011 = vertices.IndexOf(v011);
-        else
-        {
-            i011 = vertices.Count;
-            vertices.Add(v011);
-            colors.Add(data.Color);
-        }
-        int i001;
-        if (vertices.Contains(v001)) i001 = vertices.IndexOf(v001);
-        else
-        {
-            i001 = vertices.Count;
-            vertices.Add(v001);
-            colors.Add(data.Color);
-        }
+        int i101 = vertices.Count;
+        vertices.Add(v101);
+        colors.Add(data.Color);
+        int i111 = vertices.Count;
+        vertices.Add(v111);
+        colors.Add(data.Color);
+        int i011 = vertices.Count;
+        vertices.Add(v011);
+        colors.Add(data.Color);
+        int i001 = vertices.Count;
+        vertices.Add(v001);
+        colors.Add(data.Color);
         triangles.Add(i101);
         triangles.Add(i111);
         triangles.Add(i011);
@@ -221,38 +181,18 @@ public class Chunk : MonoBehaviour
         Vector3 v111 = new Vector3(x + 1, worldY + 1, z + 1);
         Vector3 v101 = new Vector3(x + 1, worldY, z + 1);
         BlockData data = m_Blocks[x, y, z];
-        int i100;
-        if (vertices.Contains(v100)) i100 = vertices.IndexOf(v100);
-        else
-        {
-            i100 = vertices.Count;
-            vertices.Add(v100);
-            colors.Add(data.Color);
-        }
-        int i110;
-        if (vertices.Contains(v110)) i110 = vertices.IndexOf(v110);
-        else
-        {
-            i110 = vertices.Count;
-            vertices.Add(v110);
-            colors.Add(data.Color);
-        }
-        int i111;
-        if (vertices.Contains(v111)) i111 = vertices.IndexOf(v111);
-        else
-        {
-            i111 = vertices.Count;
-            vertices.Add(v111);
-            colors.Add(data.Color);
-        }
-        int i101;
-        if (vertices.Contains(v101)) i101 = vertices.IndexOf(v101);
-        else
-        {
-            i101 = vertices.Count;
-            vertices.Add(v101);
-            colors.Add(data.Color);
-        }
+        int i100 = vertices.Count;
+        vertices.Add(v100);
+        colors.Add(data.Color);
+        int i110 = vertices.Count;
+        vertices.Add(v110);
+        colors.Add(data.Color);
+        int i111 = vertices.Count;
+        vertices.Add(v111);
+        colors.Add(data.Color);
+        int i101 = vertices.Count;
+        vertices.Add(v101);
+        colors.Add(data.Color);
         triangles.Add(i100);
         triangles.Add(i110);
         triangles.Add(i111);
@@ -290,38 +230,18 @@ public class Chunk : MonoBehaviour
         Vector3 v110 = new Vector3(x + 1, worldY + 1, z);
         Vector3 v100 = new Vector3(x + 1, worldY, z);
         BlockData data = m_Blocks[x, y, z];
-        int i000;
-        if (vertices.Contains(v000)) i000 = vertices.IndexOf(v000);
-        else
-        {
-            i000 = vertices.Count;
-            vertices.Add(v000);
-            colors.Add(data.Color);
-        }
-        int i010;
-        if (vertices.Contains(v010)) i010 = vertices.IndexOf(v010);
-        else
-        {
-            i010 = vertices.Count;
-            vertices.Add(v010);
-            colors.Add(data.Color);
-        }
-        int i110;
-        if (vertices.Contains(v110)) i110 = vertices.IndexOf(v110);
-        else
-        {
-            i110 = vertices.Count;
-            vertices.Add(v110);
-            colors.Add(data.Color);
-        }
-        int i100;
-        if (vertices.Contains(v100)) i100 = vertices.IndexOf(v100);
-        else
-        {
-            i100 = vertices.Count;
-            vertices.Add(v100);
-            colors.Add(data.Color);
-        }
+        int i000 = vertices.Count;
+        vertices.Add(v000);
+        colors.Add(data.Color);
+        int i010 = vertices.Count;
+        vertices.Add(v010);
+        colors.Add(data.Color);
+        int i110 = vertices.Count;
+        vertices.Add(v110);
+        colors.Add(data.Color);
+        int i100 = vertices.Count;
+        vertices.Add(v100);
+        colors.Add(data.Color);
         triangles.Add(i000);
         triangles.Add(i010);
         triangles.Add(i110);
@@ -359,38 +279,18 @@ public class Chunk : MonoBehaviour
         Vector3 v010 = new Vector3(x, worldY + 1, z);
         Vector3 v000 = new Vector3(x, worldY, z);
         BlockData data = m_Blocks[x, y, z];
-        int i001;
-        if (vertices.Contains(v001)) i001 = vertices.IndexOf(v001);
-        else
-        {
-            i001 = vertices.Count;
-            vertices.Add(v001);
-            colors.Add(data.Color);
-        }
-        int i011;
-        if (vertices.Contains(v011)) i011 = vertices.IndexOf(v011);
-        else
-        {
-            i011 = vertices.Count;
-            vertices.Add(v011);
-            colors.Add(data.Color);
-        }
-        int i010;
-        if (vertices.Contains(v010)) i010 = vertices.IndexOf(v010);
-        else
-        {
-            i010 = vertices.Count;
-            vertices.Add(v010);
-            colors.Add(data.Color);
-        }
-        int i000;
-        if (vertices.Contains(v000)) i000 = vertices.IndexOf(v000);
-        else
-        {
-            i000 = vertices.Count;
-            vertices.Add(v000);
-            colors.Add(data.Color);
-        }
+        int i001 = vertices.Count;
+        vertices.Add(v001);
+        colors.Add(data.Color);
+        int i011 = vertices.Count;
+        vertices.Add(v011);
+        colors.Add(data.Color);
+        int i010 = vertices.Count;
+        vertices.Add(v010);
+        colors.Add(data.Color);
+        int i000 = vertices.Count;
+        vertices.Add(v000);
+        colors.Add(data.Color);
         triangles.Add(i001);
         triangles.Add(i011);
         triangles.Add(i010);
@@ -430,38 +330,18 @@ public class Chunk : MonoBehaviour
             Vector3 v100 = new Vector3(x + 1, worldY, z);
             Vector3 v101 = new Vector3(x + 1, worldY, z + 1);
             BlockData data = m_Blocks[x, y, z];
-            int i001;
-            if (vertices.Contains(v001)) i001 = vertices.IndexOf(v001);
-            else
-            {
-                i001 = vertices.Count;
-                vertices.Add(v001);
-                colors.Add(data.Color);
-            }
-            int i000;
-            if (vertices.Contains(v000)) i000 = vertices.IndexOf(v000);
-            else
-            {
-                i000 = vertices.Count;
-                vertices.Add(v000);
-                colors.Add(data.Color);
-            }
-            int i100;
-            if (vertices.Contains(v100)) i100 = vertices.IndexOf(v100);
-            else
-            {
-                i100 = vertices.Count;
-                vertices.Add(v100);
-                colors.Add(data.Color);
-            }
-            int i101;
-            if (vertices.Contains(v101)) i101 = vertices.IndexOf(v101);
-            else
-            {
-                i101 = vertices.Count;
-                vertices.Add(v101);
-                colors.Add(data.Color);
-            }
+            int i001 = vertices.Count;
+            vertices.Add(v001);
+            colors.Add(data.Color);
+            int i000 = vertices.Count;
+            vertices.Add(v000);
+            colors.Add(data.Color);
+            int i100 = vertices.Count;
+            vertices.Add(v100);
+            colors.Add(data.Color);
+            int i101 = vertices.Count;
+            vertices.Add(v101);
+            colors.Add(data.Color);
             triangles.Add(i001);
             triangles.Add(i000);
             triangles.Add(i100);
