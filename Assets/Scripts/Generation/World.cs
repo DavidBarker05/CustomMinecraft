@@ -156,15 +156,15 @@ public class World : MonoBehaviour
                 {
                     Vector3Int coord = new Vector3Int(x, y, z);
                     BlockData block;
-                    if (y == 0) block = m_Bedrock;
+                    if (y == MinHeight) block = m_Bedrock;
                     else if (height < m_SnowHeight)
                     {
-                        if (y < m_GrassDepth) block = m_Stone;
+                        if (y < height - m_GrassDepth) block = m_Stone;
                         else block = m_Grass;
                     }
                     else
                     {
-                        if (y < m_SnowDepth) block = m_Stone;
+                        if (y < height - m_SnowDepth) block = m_Stone;
                         else block = m_Snow;
                     }
                     chunk.SetBlock(coord, block);

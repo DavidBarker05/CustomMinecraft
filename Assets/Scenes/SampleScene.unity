@@ -419,18 +419,18 @@ MonoBehaviour:
   m_Persistence: 0.4
   m_TerrainLowest: -16
   m_TerrainHighest: 64
-  m_MinHeight: -128
-  m_MaxHeight: 127
+  <MinHeight>k__BackingField: -128
+  <MaxHeight>k__BackingField: 127
   m_WorldHalfSize: 128
-  m_ChunkSize: 16
   m_Chunk: {fileID: 153423916287514868, guid: 7c146436e9f5bdf43aa820f9db429d2c, type: 3}
+  m_ChunkSize: 16
   m_Bedrock: {fileID: 11400000, guid: 45cfdfe5c2e0e6049b936066cfb78001, type: 2}
   m_Stone: {fileID: 11400000, guid: ff96c34fd1e0197489639e826971972d, type: 2}
   m_Grass: {fileID: 11400000, guid: 95254ce1e0c155549811c6c0a65f401c, type: 2}
   m_Snow: {fileID: 11400000, guid: a12afe6b81943e34ebfb6441ed7cd4c8, type: 2}
   m_GrassDepth: 3
   m_SnowDepth: 1
-  m_SnowHeight: 48
+  m_SnowHeight: 24
 --- !u!4 &532139156
 Transform:
   m_ObjectHideFlags: 0
