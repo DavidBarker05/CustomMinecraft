@@ -75,6 +75,36 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "SelectGrass",
+                    "type": "Button",
+                    "id": "098bca5f-c363-4613-bb34-24b374e47dfc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SelectStone",
+                    "type": "Button",
+                    "id": "e35bfb5c-0fa8-4b61-94da-6556d1008032",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "SelectSnow",
+                    "type": "Button",
+                    "id": "8205c0b8-9143-4ec4-8e0a-f8a9f428e8d4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -196,6 +226,39 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Place",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c14e331c-eb7d-4f0a-bc89-31ac53390687",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SelectGrass",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "95464a6e-26bf-4ed7-a01a-a34b8b27d6be",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SelectStone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2979141c-c624-40e9-827f-bcb6533d245e",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SelectSnow",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

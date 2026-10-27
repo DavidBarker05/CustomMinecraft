@@ -147,6 +147,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
                 m_bCurrentBreakBlockCoordSet = false;
                 m_CurrentBreakTime = 0f;
             }
+            HandleSelectingBlock(ref updateData);
             if (updateData.PlacePressedThisFrame) HandlePlacing();
         }
         else
@@ -302,6 +303,25 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     #endregion Mining
 
     #region Placing
+    void HandleSelectingBlock(ref FirstPersonPlayerCharacterUpdateData updateData)
+    {
+        if (updateData.GrassSelectStarted)
+        {
+            m_CurrentPlaceBlock = m_GrassBlock;
+            updateData.GrassSelectStarted = false;
+        }
+        else if (updateData.StoneSelectStarted)
+        {
+            m_CurrentPlaceBlock = m_StoneBlock;
+            updateData.StoneSelectStarted = false;
+        }
+        else if (updateData.SnowSelectStarted)
+        {
+            m_CurrentPlaceBlock = m_SnowBlock;
+            updateData.SnowSelectStarted = false;
+        }
+    }
+
     void HandlePlacing()
     {
         if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements

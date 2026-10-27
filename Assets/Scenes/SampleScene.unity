@@ -653,6 +653,54 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 6ac264b9-a3d2-4eac-acdc-5993deee4039
     m_ActionName: 'Player/Place[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 689036427}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: HandleGrassSelectedInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 098bca5f-c363-4613-bb34-24b374e47dfc
+    m_ActionName: 'Player/SelectGrass[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 689036427}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: HandleStoneSelectedInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e35bfb5c-0fa8-4b61-94da-6556d1008032
+    m_ActionName: 'Player/SelectStone[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 689036427}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: HandleSnowSelectedInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 8205c0b8-9143-4ec4-8e0a-f8a9f428e8d4
+    m_ActionName: 'Player/SelectSnow[/Keyboard/3]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: 
@@ -754,7 +802,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FirstPersonPlayerCharacter
   <CameraTarget>k__BackingField: {fileID: 1895535979}
-  m_BlockToPlace: {fileID: 11400000, guid: ff96c34fd1e0197489639e826971972d, type: 2}
+  m_DoInfiteBlocks: 0
+  m_StartingBlocks: 16
+  m_GrassBlock: {fileID: 11400000, guid: 95254ce1e0c155549811c6c0a65f401c, type: 2}
+  m_StoneBlock: {fileID: 11400000, guid: ff96c34fd1e0197489639e826971972d, type: 2}
+  m_SnowBlock: {fileID: 11400000, guid: a12afe6b81943e34ebfb6441ed7cd4c8, type: 2}
+  OnInventoryUpdated:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!143 &1470757483
 CharacterController:
   m_ObjectHideFlags: 0

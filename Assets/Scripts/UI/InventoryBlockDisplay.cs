@@ -4,6 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(TMP_Text))]
 public class InventoryBlockDisplay : MonoBehaviour
 {
+    [SerializeField, Range(0, 9)]
+    int m_InventoryKey;
     [SerializeField]
     BlockData m_Block;
     [SerializeField]
@@ -21,5 +23,5 @@ public class InventoryBlockDisplay : MonoBehaviour
 
     void Start() => m_Player.OnInventoryUpdated.AddListener(UpdateText);
 
-    void UpdateText() => m_Text.text = $"{m_Block.DisplayName}: {m_Player.GetBlockQuantity(m_Block)}";
+    void UpdateText() => m_Text.text = $"{m_InventoryKey}. {m_Block.DisplayName}: {m_Player.GetBlockQuantity(m_Block)}";
 }
