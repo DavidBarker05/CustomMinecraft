@@ -19,6 +19,7 @@ public class FirstPersonPlayerCharacterUpdateData : IPlayerCharacterUpdateData
     public bool SprintPressedThisFrame { get; set; }
 
     public bool BreakPressedThisFrame { get; set; }
+    public bool PlacePressedThisFrame { get; set; }
     #endregion Input
 
     #region Output
@@ -35,6 +36,9 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
 {
     static readonly float s_Epsilon = 0.05f;
     static readonly float s_SqrEpsilon = s_Epsilon * s_Epsilon;
+
+    [SerializeField]
+    BlockData m_BlockToPlace;
 
     Camera m_Camera;
     CharacterSettings m_CharacterSettings;
@@ -59,10 +63,13 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     public override bool MouseVisible => false;
     public override bool DoCameraRotation => true;
 
-    bool m_bCurrentBlockCoordSet = false;
-    Vector3Int m_CurrentBlockCoord;
-    BlockData m_CurrentBlockData;
+    bool m_bCurrentBreakBlockCoordSet = false;
+    Vector3Int m_CurrentBreakBlockCoord;
+    BlockData m_CurrentBreakBlockData;
     float m_CurrentBreakTime = 0f;
+
+    BlockData m_CurrentPlaceBlock;
+    float m_CurrentPlaceTime;
 
     PausePlayerCharacter m_PausePlayerCharacter;
 
@@ -74,6 +81,8 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
             m_CharacterSettings = initData.CharacterSettings;
             m_PausePlayerCharacter = initData.PausePlayerCharacter;
             m_Camera = initData.Camera;
+            m_CurrentPlaceTime = m_CharacterSettings.TimeBetweenPlacements;
+            m_CurrentPlaceBlock = m_BlockToPlace;
             HasBeenInitialized = true;
         }
         else
@@ -93,25 +102,27 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
         if (playerCharacterUpdateData is FirstPersonPlayerCharacterUpdateData updateData)
         {
             HandleMovement(ref updateData);
-            if (m_bCurrentBlockCoordSet && m_CurrentBlockData)
+            if (m_bCurrentBreakBlockCoordSet && m_CurrentBreakBlockData)
             {
-                if (m_CurrentBlockData.Breakable)
+                if (m_CurrentBreakBlockData.Breakable)
                 {
                     m_CurrentBreakTime += updateData.DeltaTime;
-                    if (m_CurrentBreakTime >= m_CurrentBlockData.BreakTime)
+                    if (m_CurrentBreakTime >= m_CurrentBreakBlockData.BreakTime)
                     {
-                        World.Instance.BreakBlock(m_CurrentBlockCoord);
-                        m_bCurrentBlockCoordSet = false;
+                        World.Instance.BreakBlock(m_CurrentBreakBlockCoord);
+                        m_bCurrentBreakBlockCoordSet = false;
                         m_CurrentBreakTime = 0f;
                     }
                 }
             }
+            if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements) m_CurrentPlaceTime += updateData.DeltaTime;
             if (updateData.BreakPressedThisFrame) HandleMining();
-            else if (m_bCurrentBlockCoordSet)
+            else if (m_bCurrentBreakBlockCoordSet)
             {
-                m_bCurrentBlockCoordSet = false;
+                m_bCurrentBreakBlockCoordSet = false;
                 m_CurrentBreakTime = 0f;
             }
+            if (updateData.PlacePressedThisFrame) HandlePlacing();
         }
         else
         {
@@ -244,22 +255,48 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
             layerMask: m_CharacterSettings.WorldLayer
         ))
         {
-            Vector3Int blockCoord = World.IntCoord(hitInfo.point - hitInfo.normal * 0.01f);
-            if (!m_bCurrentBlockCoordSet || m_CurrentBlockCoord != blockCoord)
+            // Go a little bit into the hit point to ensure the coord is for the block
+            Vector3Int blockCoord = World.IntCoord(hitInfo.point + m_Camera.transform.forward * 0.01f);
+            if (!m_bCurrentBreakBlockCoordSet || m_CurrentBreakBlockCoord != blockCoord)
             {
-                m_bCurrentBlockCoordSet = true;
-                m_CurrentBlockCoord = blockCoord;
+                m_bCurrentBreakBlockCoordSet = true;
+                m_CurrentBreakBlockCoord = blockCoord;
                 m_CurrentBreakTime = 0f;
-                Chunk chunk = World.Instance.GetChunk(m_CurrentBlockCoord);
-                if (chunk) m_CurrentBlockData = chunk.GetBlock(m_CurrentBlockCoord);
+                Chunk chunk = World.Instance.GetChunk(m_CurrentBreakBlockCoord);
+                if (chunk) m_CurrentBreakBlockData = chunk.GetBlock(m_CurrentBreakBlockCoord);
             }
         }
         else
         {
-            m_bCurrentBlockCoordSet = false;
+            m_bCurrentBreakBlockCoordSet = false;
             m_CurrentBreakTime = 0f;
         }
     }
     #endregion Mining
+
+    #region Placing
+    void HandlePlacing()
+    {
+        if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements) return;
+        if (Physics.Raycast(
+            origin: m_Camera.transform.position,
+            direction: m_Camera.transform.forward,
+            hitInfo: out RaycastHit hitInfo,
+            maxDistance: m_CharacterSettings.MiningDistance,
+            layerMask: m_CharacterSettings.WorldLayer
+        ))
+        {
+            Vector3Int blockCoord = World.IntCoord(hitInfo.point - m_Camera.transform.forward * 0.01f);
+            if (Physics.CheckBox(
+                center: blockCoord,
+                halfExtents: Vector3.one / 2f, // Half 1x1x1 cube
+                orientation: Quaternion.identity,
+                layerMask: 1 << gameObject.layer // gameObject.layer returns the layer not a LayerMask which is 1 << layer
+            )) return; // If would place cube inside self don't
+            World.Instance.PlaceBlock(blockCoord, m_CurrentPlaceBlock);
+            m_CurrentPlaceTime = 0f;
+        }
+    }
+    #endregion Placing
     #endregion Mining and Placing
 }

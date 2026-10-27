@@ -24,6 +24,10 @@ public class CharacterSettings : ScriptableObject
     public LayerMask WorldLayer { get; private set; }
     [field: SerializeField, Min(0.001f)]
     public float MiningDistance { get; private set; } = 7f;
+    [field: SerializeField, Min(1f)]
+    public float PlacingDistance { get; private set; } = 5f;
+    [field: SerializeField, Min(0.001f)]
+    public float TimeBetweenPlacements { get; private set; } = 0.25f;
 
     public float Gravity { get; private set; }
     public float PosGravity { get; private set; }

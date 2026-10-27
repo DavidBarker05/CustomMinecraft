@@ -132,6 +132,27 @@ public class World : MonoBehaviour
         if (chunkNegX && chunkNegX != chunk) chunkNegX.UpdateMesh();
     }
 
+    public void PlaceBlock(Vector3 coord, BlockData block)
+    {
+        Vector3Int intCoord = IntCoord(coord);
+        Chunk chunk = GetChunk(intCoord);
+        if (!chunk) return;
+        chunk.SetBlock(intCoord, block);
+        chunk.UpdateMesh();
+        Vector3Int intCoordPosZ = intCoord + Vector3Int.forward;
+        Chunk chunkPosZ = GetChunk(intCoordPosZ);
+        if (chunkPosZ && chunkPosZ != chunk) chunkPosZ.UpdateMesh();
+        Vector3Int intCoordPosX = intCoord + Vector3Int.right;
+        Chunk chunkPosX = GetChunk(intCoordPosX);
+        if (chunkPosX && chunkPosX != chunk) chunkPosX.UpdateMesh();
+        Vector3Int intCoordNegZ = intCoord + Vector3Int.back;
+        Chunk chunkNegZ = GetChunk(intCoordNegZ);
+        if (chunkNegZ && chunkNegZ != chunk) chunkNegZ.UpdateMesh();
+        Vector3Int intCoordNegX = intCoord + Vector3Int.left;
+        Chunk chunkNegX = GetChunk(intCoordNegX);
+        if (chunkNegX && chunkNegX != chunk) chunkNegX.UpdateMesh();
+    }
+
     // Initialise the random seed as well as the offsets used in generation
     void InitSeed()
     {

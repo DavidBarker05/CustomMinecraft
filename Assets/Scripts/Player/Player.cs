@@ -153,5 +153,10 @@ public class Player : MonoBehaviour
     {
         SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData => updateData.BreakPressedThisFrame = ctx.action.WasPressedThisFrame());
     }
+
+    public void HandlePlaceInput(InputAction.CallbackContext ctx)
+    {
+        SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData => updateData.PlacePressedThisFrame = ctx.action.WasPressedThisFrame());
+    }
     #endregion Handle PlayerInput Events
 }

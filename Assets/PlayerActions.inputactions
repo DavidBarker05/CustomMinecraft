@@ -65,6 +65,16 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "Place",
+                    "type": "Button",
+                    "id": "6ac264b9-a3d2-4eac-acdc-5993deee4039",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -175,6 +185,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Break",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6726f424-46e3-4878-a0b2-c353cead9b21",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Place",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
