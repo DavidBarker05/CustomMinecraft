@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer),
+typeof(MeshCollider))]
 public class Chunk : MonoBehaviour
 {
     MeshFilter m_MeshFilter;
+    MeshCollider m_MeshCollider;
 
     int m_StartX, m_StartZ;
     BlockData[,,] m_Blocks;
@@ -14,7 +16,11 @@ public class Chunk : MonoBehaviour
 
     Mesh m_Mesh;
 
-    void Awake() => m_MeshFilter = GetComponent<MeshFilter>();
+    void Awake()
+    {
+        m_MeshFilter = GetComponent<MeshFilter>();
+        m_MeshCollider = GetComponent<MeshCollider>();
+    }
 
     void OnDestroy()
     {
@@ -67,6 +73,7 @@ public class Chunk : MonoBehaviour
     void UpdateMesh()
     {
         m_Mesh.Clear();
+        m_MeshCollider.sharedMesh = null;
         List<Vector3> vertices = new List<Vector3>();
         List<Color> colors = new List<Color>();
         List<int> triangles = new List<int>();
@@ -91,6 +98,7 @@ public class Chunk : MonoBehaviour
         m_Mesh.colors = colors.ToArray();
         m_Mesh.RecalculateNormals();
         m_Mesh.RecalculateTangents();
+        m_MeshCollider.sharedMesh = m_Mesh;
     }
 
     void BlockPosY(int x, int y, int z, ref List<Vector3> vertices, ref List<Color> colors, ref List<int> triangles)

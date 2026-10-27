@@ -48,6 +48,9 @@ public class World : MonoBehaviour
     int m_SnowDepth = 1;
     [SerializeField, Min(0)]
     int m_SnowHeight = 48;
+    [Header("Player")]
+    [SerializeField]
+    FirstPersonPlayerCharacter m_Player;
 
     static readonly float s_MinOffset = -32768f, s_MaxOffset = 32767f;
     static readonly float s_ZoomScale = 64f; // Because use integers if don't increase zoom then perlin is to jagged
@@ -59,6 +62,8 @@ public class World : MonoBehaviour
     int StartingTerrainHeightRange => m_TerrainHighest - m_TerrainLowest;
 
     float m_OffsetX, m_OffsetY;
+
+    Vector3Int m_SpawnPoint;
 
     void Awake()
     {
@@ -77,6 +82,7 @@ public class World : MonoBehaviour
         m_ChunkSize = Mathf.Min(m_ChunkSize, WorldSize); // Ensure chunk is never larger than world
         GenerateBlocks();
         GenerateMeshes();
+        RespawnPlayer();
     }
 
     public static Vector3Int IntCoord(Vector3 coord) => Vector3Int.FloorToInt(coord);
@@ -93,6 +99,16 @@ public class World : MonoBehaviour
     {
         Vector3Int intCoord = IntCoord(coord);
         return GetChunk(intCoord);
+    }
+
+    public void RespawnPlayer()
+    {
+        if (!m_Player) return;
+        CharacterController cc = m_Player.GetComponent<CharacterController>();
+        cc.enabled = false;
+        m_Player.transform.position = m_SpawnPoint;
+        cc.enabled = true;
+        cc.Move(Vector3.down);
     }
 
     // Initialise the random seed as well as the offsets used in generation
@@ -151,6 +167,7 @@ public class World : MonoBehaviour
                 int chunkX = (x + m_WorldHalfSize) / m_ChunkSize;
                 int chunkZ = (z + m_WorldHalfSize) / m_ChunkSize;
                 int height = TerrainHeight(x, z);
+                if (x == 0 && z == 0) m_SpawnPoint = new Vector3Int(x, height + 1, z);
                 Chunk chunk = m_Chunks[chunkX, chunkZ];
                 for (int y = MinHeight; y <= height; ++y)
                 {
