@@ -159,12 +159,12 @@ public class World : MonoBehaviour
                     if (y == MinHeight) block = m_Bedrock;
                     else if (height < m_SnowHeight)
                     {
-                        if (y < height - m_GrassDepth) block = m_Stone;
+                        if (y <= height - m_GrassDepth) block = m_Stone;
                         else block = m_Grass;
                     }
                     else
                     {
-                        if (y < height - m_SnowDepth) block = m_Stone;
+                        if (y <= height - m_SnowDepth) block = m_Stone;
                         else block = m_Snow;
                     }
                     chunk.SetBlock(coord, block);
