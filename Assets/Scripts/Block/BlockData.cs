@@ -4,6 +4,8 @@ using UnityEngine;
 public class BlockData : ScriptableObject
 {
     [field: SerializeField]
+    public string DisplayName { get; private set; }
+    [field: SerializeField]
     public bool Breakable { get; private set; }
     [field: SerializeField]
     public Color Color { get; private set; }

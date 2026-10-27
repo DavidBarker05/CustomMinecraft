@@ -132,12 +132,12 @@ public class World : MonoBehaviour
         if (chunkNegX && chunkNegX != chunk) chunkNegX.UpdateMesh();
     }
 
-    public void PlaceBlock(Vector3 coord, BlockData block)
+    public bool PlaceBlock(Vector3 coord, BlockData block)
     {
         Vector3Int intCoord = IntCoord(coord);
         Chunk chunk = GetChunk(intCoord);
-        if (!chunk) return;
-        chunk.SetBlock(intCoord, block);
+        if (!chunk) return false;
+        if (!chunk.SetBlock(intCoord, block)) return false;
         chunk.UpdateMesh();
         Vector3Int intCoordPosZ = intCoord + Vector3Int.forward;
         Chunk chunkPosZ = GetChunk(intCoordPosZ);
@@ -151,6 +151,7 @@ public class World : MonoBehaviour
         Vector3Int intCoordNegX = intCoord + Vector3Int.left;
         Chunk chunkNegX = GetChunk(intCoordNegX);
         if (chunkNegX && chunkNegX != chunk) chunkNegX.UpdateMesh();
+        return true;
     }
 
     // Initialise the random seed as well as the offsets used in generation

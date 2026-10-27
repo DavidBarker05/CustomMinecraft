@@ -158,5 +158,47 @@ public class Player : MonoBehaviour
     {
         SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData => updateData.PlacePressedThisFrame = ctx.action.WasPressedThisFrame());
     }
+
+    public void HandleGrassSelectedInput(InputAction.CallbackContext ctx)
+    {
+        SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData =>
+        {
+            bool bStarted = ctx.started;
+            updateData.GrassSelectStarted |= bStarted;
+            if (bStarted) // Overwrite previous selection this frame if any
+            {
+                updateData.StoneSelectStarted = false;
+                updateData.SnowSelectStarted = false;
+            }
+        });
+    }
+
+    public void HandleStoneSelectedInput(InputAction.CallbackContext ctx)
+    {
+        SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData =>
+        {
+            bool bStarted = ctx.started;
+            updateData.StoneSelectStarted |= bStarted;
+            if (bStarted) // Overwrite previous selection this frame if any
+            {
+                updateData.GrassSelectStarted = false;
+                updateData.SnowSelectStarted = false;
+            }
+        });
+    }
+
+    public void HandleSnowSelectedInput(InputAction.CallbackContext ctx)
+    {
+        SetDataValue<FirstPersonPlayerCharacterUpdateData>(updateData =>
+        {
+            bool bStarted = ctx.started;
+            updateData.SnowSelectStarted |= bStarted;
+            if (bStarted) // Overwrite previous selection this frame if any
+            {
+                updateData.GrassSelectStarted = false;
+                updateData.StoneSelectStarted = false;
+            }
+        });
+    }
     #endregion Handle PlayerInput Events
 }

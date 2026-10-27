@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class FirstPersonPlayerCharacterInitData : IPlayerCharacterInitData
 {
@@ -20,6 +22,10 @@ public class FirstPersonPlayerCharacterUpdateData : IPlayerCharacterUpdateData
 
     public bool BreakPressedThisFrame { get; set; }
     public bool PlacePressedThisFrame { get; set; }
+
+    public bool GrassSelectStarted { get; set; }
+    public bool StoneSelectStarted { get; set; }
+    public bool SnowSelectStarted { get; set; }
     #endregion Input
 
     #region Output
@@ -37,8 +43,16 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     static readonly float s_Epsilon = 0.05f;
     static readonly float s_SqrEpsilon = s_Epsilon * s_Epsilon;
 
+    [SerializeField, Tooltip("This is for testing so that it's easier to see the world has a height limit")]
+    bool m_DoInfiteBlocks = false;
+    [SerializeField, Min(0)]
+    int m_StartingBlocks = 16;
     [SerializeField]
-    BlockData m_BlockToPlace;
+    BlockData m_GrassBlock;
+    [SerializeField]
+    BlockData m_StoneBlock;
+    [SerializeField]
+    BlockData m_SnowBlock;
 
     Camera m_Camera;
     CharacterSettings m_CharacterSettings;
@@ -73,6 +87,9 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
 
     PausePlayerCharacter m_PausePlayerCharacter;
 
+    readonly Dictionary<BlockData, int> m_Inventory = new Dictionary<BlockData, int>();
+    public UnityEvent OnInventoryUpdated = new UnityEvent();
+
     public override void Init(IPlayerCharacterInitData playerCharacterInitData)
     {
         if (playerCharacterInitData is FirstPersonPlayerCharacterInitData initData)
@@ -82,7 +99,10 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
             m_PausePlayerCharacter = initData.PausePlayerCharacter;
             m_Camera = initData.Camera;
             m_CurrentPlaceTime = m_CharacterSettings.TimeBetweenPlacements;
-            m_CurrentPlaceBlock = m_BlockToPlace;
+            m_CurrentPlaceBlock = m_GrassBlock;
+            if (m_GrassBlock) m_Inventory.Add(m_GrassBlock, m_StartingBlocks);
+            if (m_StoneBlock) m_Inventory.Add(m_StoneBlock, m_StartingBlocks);
+            if (m_SnowBlock) m_Inventory.Add(m_SnowBlock, m_StartingBlocks);
             HasBeenInitialized = true;
         }
         else
@@ -109,6 +129,11 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
                     m_CurrentBreakTime += updateData.DeltaTime;
                     if (m_CurrentBreakTime >= m_CurrentBreakBlockData.BreakTime)
                     {
+                        if (m_Inventory.ContainsKey(m_CurrentBreakBlockData))
+                        {
+                            ++m_Inventory[m_CurrentBreakBlockData];
+                            OnInventoryUpdated?.Invoke();
+                        }
                         World.Instance.BreakBlock(m_CurrentBreakBlockCoord);
                         m_bCurrentBreakBlockCoordSet = false;
                         m_CurrentBreakTime = 0f;
@@ -140,6 +165,8 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
         }
         m_PausePlayerCharacter.PauseGame(this);
     }
+
+    public int GetBlockQuantity(BlockData block) => m_Inventory.ContainsKey(block) ? m_Inventory[block] : 0;
 
     #region Movement
     void HandleMovement(ref FirstPersonPlayerCharacterUpdateData updateData)
@@ -277,7 +304,9 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     #region Placing
     void HandlePlacing()
     {
-        if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements) return;
+        if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements
+            || !m_Inventory.ContainsKey(m_CurrentPlaceBlock)
+            || (m_Inventory[m_CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks)) return;
         if (Physics.Raycast(
             origin: m_Camera.transform.position,
             direction: m_Camera.transform.forward,
@@ -293,7 +322,11 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
                 orientation: Quaternion.identity,
                 layerMask: 1 << gameObject.layer // gameObject.layer returns the layer not a LayerMask which is 1 << layer
             )) return; // If would place cube inside self don't
-            World.Instance.PlaceBlock(blockCoord, m_CurrentPlaceBlock);
+            if (World.Instance.PlaceBlock(blockCoord, m_CurrentPlaceBlock) && !m_DoInfiteBlocks)
+            {
+                --m_Inventory[m_CurrentPlaceBlock];
+                OnInventoryUpdated?.Invoke();
+            }
             m_CurrentPlaceTime = 0f;
         }
     }

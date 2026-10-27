@@ -52,13 +52,14 @@ public class Chunk : MonoBehaviour
         z: coord.z - m_StartZ
     );
 
-    public void SetBlock(Vector3Int coord, BlockData block)
+    public bool SetBlock(Vector3Int coord, BlockData block)
     {
         Vector3Int chunkCoord = ToChunkCoord(coord);
-        if (chunkCoord.x < 0 || chunkCoord.x >= m_ChunkSize) return;
-        if (chunkCoord.y < 0 || chunkCoord.y >= m_MaxHeight - m_MinHeight + 1) return;
-        if (chunkCoord.z < 0 || chunkCoord.z >= m_ChunkSize) return;
+        if (chunkCoord.x < 0 || chunkCoord.x >= m_ChunkSize) return false;
+        if (chunkCoord.y < 0 || chunkCoord.y >= m_MaxHeight - m_MinHeight + 1) return false;
+        if (chunkCoord.z < 0 || chunkCoord.z >= m_ChunkSize) return false;
         m_Blocks[chunkCoord.x, chunkCoord.y, chunkCoord.z] = block;
+        return true;
     }
 
     public BlockData GetBlock(Vector3Int coord)
