@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Block", menuName = "Scriptable Objects/Block")]
-public class Block : ScriptableObject
+[CreateAssetMenu(fileName = "BlockData", menuName = "Scriptable Objects/Block Data")]
+public class BlockData : ScriptableObject
 {
     [field: SerializeField]
     public bool Breakable { get; private set; }

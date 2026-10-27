@@ -31,17 +31,17 @@ public class World : MonoBehaviour
     [Header("Chunks")]
     [SerializeField]
     Chunk m_Chunk;
-    [SerializeField, Min(1)]
+    [SerializeField, Range(1, 256)]
     int m_ChunkSize = 16;
     [Header("Blocks")]
     [SerializeField]
-    Block m_Bedrock;
+    BlockData m_Bedrock;
     [SerializeField]
-    Block m_Stone;
+    BlockData m_Stone;
     [SerializeField]
-    Block m_Grass;
+    BlockData m_Grass;
     [SerializeField]
-    Block m_Snow;
+    BlockData m_Snow;
     [SerializeField, Min(1), Tooltip("How many grass blocks from surface before stone starts spawning")]
     int m_GrassDepth = 3;
     [SerializeField, Min(1), Tooltip("How many snow blocks from surface before stone starts spawning")]
@@ -74,6 +74,7 @@ public class World : MonoBehaviour
         InitChunks();
         m_TerrainLowest = Mathf.Max(MinHeight, m_TerrainLowest); // Ensure terrain lowest is never below min height
         m_TerrainHighest = Mathf.Min(m_TerrainHighest, MaxHeight); // Ensure terrain heighest is never above max height
+        m_ChunkSize = Mathf.Min(m_ChunkSize, WorldSize); // Ensure chunk is never larger than world
         GenerateBlocks();
         GenerateMeshes();
     }
@@ -83,6 +84,13 @@ public class World : MonoBehaviour
     public Chunk GetChunk(Vector3 coord)
     {
         Vector3Int intCoord = IntCoord(coord);
+        int x = (Mathf.Clamp(intCoord.x, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
+        int z = (Mathf.Clamp(intCoord.z, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
+        return m_Chunks[x, z];
+    }
+
+    public Chunk GetChunk(Vector3Int intCoord)
+    {
         int x = (Mathf.Clamp(intCoord.x, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
         int z = (Mathf.Clamp(intCoord.z, -m_WorldHalfSize, m_WorldHalfSize - 1) + m_WorldHalfSize) / m_ChunkSize;
         return m_Chunks[x, z];
@@ -148,8 +156,7 @@ public class World : MonoBehaviour
                 for (int y = MinHeight; y <= height; ++y)
                 {
                     Vector3Int coord = new Vector3Int(x, y, z);
-                    Vector3Int chunkCoord = chunk.ToChunkCoord(coord);
-                    Block block;
+                    BlockData block;
                     if (y == 0) block = m_Bedrock;
                     else if (height < m_SnowHeight)
                     {
@@ -161,7 +168,7 @@ public class World : MonoBehaviour
                         if (y < m_SnowDepth) block = m_Stone;
                         else block = m_Snow;
                     }
-                    chunk.SetBlock(chunkCoord, block);
+                    chunk.SetBlock(coord, block);
                 }
             }
         }
