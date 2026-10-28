@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a00d91cfda356b48a3c97781d5eb337, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: Assembly-CSharp::Block
+  <DisplayName>k__BackingField: Stone
   <Breakable>k__BackingField: 1
   <Color>k__BackingField: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
   <BreakTime>k__BackingField: 3

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a00d91cfda356b48a3c97781d5eb337, type: 3}
   m_Name: Bedrock
   m_EditorClassIdentifier: Assembly-CSharp::Block
+  <DisplayName>k__BackingField: Bedrock
   <Breakable>k__BackingField: 0
   <Color>k__BackingField: {r: 0.18490559, g: 0.18490559, b: 0.18490559, a: 1}
   <BreakTime>k__BackingField: 0

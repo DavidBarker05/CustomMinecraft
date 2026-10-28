@@ -1,9 +1,12 @@
 using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(TMP_Text))]
 public class InventoryBlockDisplay : MonoBehaviour
 {
+    [SerializeField]
+    GameObject m_SelectedHighlight;
+    [SerializeField]
+    TMP_Text m_Text;
     [SerializeField, Range(0, 9)]
     int m_InventoryKey;
     [SerializeField]
@@ -11,17 +14,17 @@ public class InventoryBlockDisplay : MonoBehaviour
     [SerializeField]
     FirstPersonPlayerCharacter m_Player;
 
-    TMP_Text m_Text;
+    void OnEnable() => UpdateDisplay();
 
-    void Awake() => m_Text = GetComponent<TMP_Text>();
-
-    void OnEnable()
+    void Start()
     {
-        if (!m_Text) m_Text = GetComponent<TMP_Text>();
-        UpdateText();
+        m_Player.OnInventoryUpdated.AddListener(UpdateDisplay);
+        UpdateDisplay(); // In case OnEnable happens before player inventory updates or anything
     }
 
-    void Start() => m_Player.OnInventoryUpdated.AddListener(UpdateText);
-
-    void UpdateText() => m_Text.text = $"{m_InventoryKey}. {m_Block.DisplayName}: {m_Player.GetBlockQuantity(m_Block)}";
+    void UpdateDisplay()
+    {
+        m_SelectedHighlight.SetActive(m_Player.CurrentPlaceBlock == m_Block);
+        m_Text.text = $"{m_InventoryKey}. {m_Block.DisplayName}: {m_Player.GetBlockQuantity(m_Block)}";
+    }
 }

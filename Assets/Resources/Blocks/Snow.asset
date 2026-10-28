@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a00d91cfda356b48a3c97781d5eb337, type: 3}
   m_Name: Snow
   m_EditorClassIdentifier: Assembly-CSharp::Block
+  <DisplayName>k__BackingField: Snow
   <Breakable>k__BackingField: 1
   <Color>k__BackingField: {r: 0.8584906, g: 1, b: 0.9911162, a: 1}
   <BreakTime>k__BackingField: 0.25

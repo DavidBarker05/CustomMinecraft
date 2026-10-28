@@ -85,7 +85,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     BlockData m_CurrentBreakBlockData;
     float m_CurrentBreakTime = 0f;
 
-    BlockData m_CurrentPlaceBlock;
+    public BlockData CurrentPlaceBlock { get; private set; }
     float m_CurrentPlaceTime;
     GameObject m_Wireframe;
 
@@ -103,7 +103,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
             m_PausePlayerCharacter = initData.PausePlayerCharacter;
             m_Camera = initData.Camera;
             m_CurrentPlaceTime = m_CharacterSettings.TimeBetweenPlacements;
-            m_CurrentPlaceBlock = m_GrassBlock;
+            CurrentPlaceBlock = m_GrassBlock;
             if (m_GrassBlock) m_Inventory.Add(m_GrassBlock, m_StartingBlocks);
             if (m_StoneBlock) m_Inventory.Add(m_StoneBlock, m_StartingBlocks);
             if (m_SnowBlock) m_Inventory.Add(m_SnowBlock, m_StartingBlocks);
@@ -314,26 +314,29 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     {
         if (updateData.GrassSelectStarted)
         {
-            m_CurrentPlaceBlock = m_GrassBlock;
+            CurrentPlaceBlock = m_GrassBlock;
             updateData.GrassSelectStarted = false;
+            OnInventoryUpdated?.Invoke();
         }
         else if (updateData.StoneSelectStarted)
         {
-            m_CurrentPlaceBlock = m_StoneBlock;
+            CurrentPlaceBlock = m_StoneBlock;
             updateData.StoneSelectStarted = false;
+            OnInventoryUpdated?.Invoke();
         }
         else if (updateData.SnowSelectStarted)
         {
-            m_CurrentPlaceBlock = m_SnowBlock;
+            CurrentPlaceBlock = m_SnowBlock;
             updateData.SnowSelectStarted = false;
+            OnInventoryUpdated?.Invoke();
         }
     }
 
     void HandleWireframe()
     {
-        if (!m_CurrentPlaceBlock
-            || !m_Inventory.ContainsKey(m_CurrentPlaceBlock)
-            || (m_Inventory[m_CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks))
+        if (!CurrentPlaceBlock
+            || !m_Inventory.ContainsKey(CurrentPlaceBlock)
+            || (m_Inventory[CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks))
         {
             m_Wireframe.SetActive(false);
             return;
@@ -371,8 +374,8 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     void HandlePlacing()
     {
         if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements
-            || !m_Inventory.ContainsKey(m_CurrentPlaceBlock)
-            || (m_Inventory[m_CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks)) return;
+            || !m_Inventory.ContainsKey(CurrentPlaceBlock)
+            || (m_Inventory[CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks)) return;
         if (Physics.Raycast(
             origin: m_Camera.transform.position,
             direction: m_Camera.transform.forward,
@@ -388,9 +391,9 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
                 orientation: Quaternion.identity,
                 layerMask: 1 << gameObject.layer // gameObject.layer returns the layer not a LayerMask which is 1 << layer
             )) return; // If would place cube inside self don't
-            if (World.Instance.PlaceBlock(blockCoord, m_CurrentPlaceBlock) && !m_DoInfiteBlocks)
+            if (World.Instance.PlaceBlock(blockCoord, CurrentPlaceBlock) && !m_DoInfiteBlocks)
             {
-                --m_Inventory[m_CurrentPlaceBlock];
+                --m_Inventory[CurrentPlaceBlock];
                 OnInventoryUpdated?.Invoke();
             }
             m_CurrentPlaceTime = 0f;

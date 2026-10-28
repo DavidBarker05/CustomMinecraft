@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a00d91cfda356b48a3c97781d5eb337, type: 3}
   m_Name: Grass
   m_EditorClassIdentifier: Assembly-CSharp::Block
+  <DisplayName>k__BackingField: Grass
   <Breakable>k__BackingField: 1
   <Color>k__BackingField: {r: 0, g: 0.5773585, b: 0.0774338, a: 1}
   <BreakTime>k__BackingField: 1
