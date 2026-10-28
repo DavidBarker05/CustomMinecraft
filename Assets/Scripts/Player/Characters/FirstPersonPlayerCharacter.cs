@@ -45,7 +45,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
 
     [Header("Blocks")]
     [SerializeField, Tooltip("This is for testing so that it's easier to see the world has a height limit")]
-    bool m_DoInfiteBlocks = false;
+    bool m_DoInfiniteBlocks = false;
     [SerializeField, Min(0)]
     int m_StartingBlocks = 16;
     [SerializeField]
@@ -336,7 +336,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     {
         if (!CurrentPlaceBlock
             || !m_Inventory.ContainsKey(CurrentPlaceBlock)
-            || (m_Inventory[CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks))
+            || (m_Inventory[CurrentPlaceBlock] == 0 && !m_DoInfiniteBlocks))
         {
             m_Wireframe.SetActive(false);
             return;
@@ -375,7 +375,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     {
         if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements
             || !m_Inventory.ContainsKey(CurrentPlaceBlock)
-            || (m_Inventory[CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks)) return;
+            || (m_Inventory[CurrentPlaceBlock] == 0 && !m_DoInfiniteBlocks)) return;
         if (Physics.Raycast(
             origin: m_Camera.transform.position,
             direction: m_Camera.transform.forward,
@@ -391,7 +391,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
                 orientation: Quaternion.identity,
                 layerMask: 1 << gameObject.layer // gameObject.layer returns the layer not a LayerMask which is 1 << layer
             )) return; // If would place cube inside self don't
-            if (World.Instance.PlaceBlock(blockCoord, CurrentPlaceBlock) && !m_DoInfiteBlocks)
+            if (World.Instance.PlaceBlock(blockCoord, CurrentPlaceBlock) && !m_DoInfiniteBlocks)
             {
                 --m_Inventory[CurrentPlaceBlock];
                 OnInventoryUpdated?.Invoke();
