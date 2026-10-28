@@ -82,6 +82,7 @@ public class World : MonoBehaviour
         m_ChunkSize = Mathf.Min(m_ChunkSize, WorldSize); // Ensure chunk is never larger than world
         GenerateBlocks();
         GenerateMeshes();
+        GenerateBoundries();
         RespawnPlayer();
     }
 
@@ -242,5 +243,32 @@ public class World : MonoBehaviour
                 m_Chunks[i, j].CreateMesh();
             }
         }
+    }
+
+    void GenerateBoundries()
+    {
+        GameObject posZ = new GameObject("PosZBoundry");
+        posZ.transform.parent = transform;
+        BoxCollider posZBoundry = posZ.AddComponent<BoxCollider>();
+        posZBoundry.center = new Vector3(0f, 0f, m_WorldHalfSize + 0.5f);
+        posZBoundry.size = new Vector3(WorldSize + 2f, MaxHeight - MinHeight + 51f, 1f);
+
+        GameObject posX = new GameObject("PosXBoundry");
+        posX.transform.parent = transform;
+        BoxCollider posXBoundry = posX.AddComponent<BoxCollider>();
+        posXBoundry.center = new Vector3(m_WorldHalfSize + 0.5f, 0f, 0f);
+        posXBoundry.size = new Vector3(1f, MaxHeight - MinHeight + 51, WorldSize + 2f);
+
+        GameObject negZ = new GameObject("NegZBoundry");
+        negZ.transform.parent = transform;
+        BoxCollider negZBoundry = negZ.AddComponent<BoxCollider>();
+        negZBoundry.center = new Vector3(0f, 0f, -m_WorldHalfSize - 0.5f);
+        negZBoundry.size = new Vector3(WorldSize + 2f, MaxHeight - MinHeight + 51f, 1f);
+
+        GameObject negX = new GameObject("NegXBoundry");
+        negX.transform.parent = transform;
+        BoxCollider negXBoundry = negX.AddComponent<BoxCollider>();
+        negXBoundry.center = new Vector3(-m_WorldHalfSize - 0.5f, 0f, 0f);
+        negXBoundry.size = new Vector3(1f, MaxHeight - MinHeight + 51, WorldSize + 2f);
     }
 }
