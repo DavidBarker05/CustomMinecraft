@@ -15,7 +15,7 @@ MonoBehaviour:
   <CanSprintInAir>k__BackingField: 1
   <MovementSpeed>k__BackingField: 4.5
   <SprintSpeed>k__BackingField: 10
-  <JumpHeight>k__BackingField: 1
+  <JumpHeight>k__BackingField: 1.1
   <TimeToReachJumpHeight>k__BackingField: 0.25
   <JumpBuffer>k__BackingField: 0.05
   <CoyoteTime>k__BackingField: 0.05
@@ -23,3 +23,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   <MiningDistance>k__BackingField: 7
+  <PlacingDistance>k__BackingField: 5
+  <TimeBetweenPlacements>k__BackingField: 0.25

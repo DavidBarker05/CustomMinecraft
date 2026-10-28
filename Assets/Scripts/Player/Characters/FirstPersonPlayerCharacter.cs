@@ -43,6 +43,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     static readonly float s_Epsilon = 0.05f;
     static readonly float s_SqrEpsilon = s_Epsilon * s_Epsilon;
 
+    [Header("Blocks")]
     [SerializeField, Tooltip("This is for testing so that it's easier to see the world has a height limit")]
     bool m_DoInfiteBlocks = false;
     [SerializeField, Min(0)]
@@ -53,6 +54,8 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
     BlockData m_StoneBlock;
     [SerializeField]
     BlockData m_SnowBlock;
+    [SerializeField]
+    GameObject m_WireframePrefab;
 
     Camera m_Camera;
     CharacterSettings m_CharacterSettings;
@@ -84,6 +87,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
 
     BlockData m_CurrentPlaceBlock;
     float m_CurrentPlaceTime;
+    GameObject m_Wireframe;
 
     PausePlayerCharacter m_PausePlayerCharacter;
 
@@ -103,6 +107,8 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
             if (m_GrassBlock) m_Inventory.Add(m_GrassBlock, m_StartingBlocks);
             if (m_StoneBlock) m_Inventory.Add(m_StoneBlock, m_StartingBlocks);
             if (m_SnowBlock) m_Inventory.Add(m_SnowBlock, m_StartingBlocks);
+            m_Wireframe = Instantiate(m_WireframePrefab);
+            m_Wireframe.SetActive(false);
             HasBeenInitialized = true;
         }
         else
@@ -148,6 +154,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
                 m_CurrentBreakTime = 0f;
             }
             HandleSelectingBlock(ref updateData);
+            HandleWireframe();
             if (updateData.PlacePressedThisFrame) HandlePlacing();
         }
         else
@@ -322,6 +329,45 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
         }
     }
 
+    void HandleWireframe()
+    {
+        if (!m_CurrentPlaceBlock
+            || !m_Inventory.ContainsKey(m_CurrentPlaceBlock)
+            || (m_Inventory[m_CurrentPlaceBlock] == 0 && !m_DoInfiteBlocks))
+        {
+            m_Wireframe.SetActive(false);
+            return;
+        }
+        if (Physics.Raycast(
+            origin: m_Camera.transform.position,
+            direction: m_Camera.transform.forward,
+            hitInfo: out RaycastHit hitInfo,
+            maxDistance: m_CharacterSettings.PlacingDistance,
+            layerMask: m_CharacterSettings.WorldLayer
+        ))
+        {
+            Vector3Int blockCoord = World.IntCoord(hitInfo.point - m_Camera.transform.forward * 0.01f);
+            if (blockCoord.y > World.Instance.MaxHeight)
+            {
+                m_Wireframe.SetActive(false);
+                return;
+            }
+            if (Physics.CheckBox(
+                center: blockCoord,
+                halfExtents: Vector3.one / 2f, // Half 1x1x1 cube
+                orientation: Quaternion.identity,
+                layerMask: 1 << gameObject.layer // gameObject.layer returns the layer not a LayerMask which is 1 << layer
+            ))
+            {
+                m_Wireframe.SetActive(false);
+                return; // If would place cube inside self don't
+            }
+            m_Wireframe.transform.position = blockCoord;
+            if (!m_Wireframe.activeSelf) m_Wireframe.SetActive(true);
+        }
+        else m_Wireframe.SetActive(false);
+    }
+
     void HandlePlacing()
     {
         if (m_CurrentPlaceTime < m_CharacterSettings.TimeBetweenPlacements
@@ -331,7 +377,7 @@ public class FirstPersonPlayerCharacter : PlayerCharacter
             origin: m_Camera.transform.position,
             direction: m_Camera.transform.forward,
             hitInfo: out RaycastHit hitInfo,
-            maxDistance: m_CharacterSettings.MiningDistance,
+            maxDistance: m_CharacterSettings.PlacingDistance,
             layerMask: m_CharacterSettings.WorldLayer
         ))
         {

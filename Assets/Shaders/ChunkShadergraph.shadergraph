@@ -43,7 +43,11 @@
         }
     ],
     "m_GroupDatas": [],
-    "m_StickyNoteDatas": [],
+    "m_StickyNoteDatas": [
+        {
+            "m_Id": "a58ba288b7fb4f4489fd9c9ba065dc6a"
+        }
+    ],
     "m_Edges": [
         {
             "m_OutputSlot": {
@@ -509,6 +513,26 @@
         "m_SerializableColors": []
     },
     "m_SerializedDescriptor": "SurfaceDescription.NormalTS"
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.StickyNoteData",
+    "m_ObjectId": "a58ba288b7fb4f4489fd9c9ba065dc6a",
+    "m_Title": "Why not HLSL?",
+    "m_Content": "The shader is just a standard URP lit shader but doesn't use texture and the colour is just the vertex colour. A shader graph handles all the standard URP lit boilerplate and so it's simpler to use this",
+    "m_TextSize": 0,
+    "m_Theme": 0,
+    "m_Position": {
+        "serializedVersion": "2",
+        "x": -429.6000061035156,
+        "y": 43.20000076293945,
+        "width": 200.0,
+        "height": 160.0
+    },
+    "m_Group": {
+        "m_Id": ""
+    }
 }
 
 {
