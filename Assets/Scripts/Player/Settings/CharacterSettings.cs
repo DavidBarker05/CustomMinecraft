@@ -37,6 +37,8 @@ public class CharacterSettings : ScriptableObject
 
     void OnEnable() => CalculateValues();
 
+    // Calculate the gravity that should be applied to the player based on how high we want the player to jump
+    // and how long we want the player to reach that jump height
     void CalculateValues()
     {
         Gravity = (-2f * JumpHeight) / (TimeToReachJumpHeight * TimeToReachJumpHeight);

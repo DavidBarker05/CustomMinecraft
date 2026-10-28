@@ -11,7 +11,7 @@ public class SceneLoadButton : MonoBehaviour
 
     void Awake() => GetComponent<Button>().onClick.AddListener(() =>
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; // Reset timeScale to 1f from being paused
         m_LoadingScreen.SceneIndexToLoad = m_SceneIndex;
         m_LoadingScreen.gameObject.SetActive(true);
     });

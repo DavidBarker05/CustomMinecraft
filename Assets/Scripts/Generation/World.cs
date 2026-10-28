@@ -119,18 +119,24 @@ public class World : MonoBehaviour
         if (!chunk) return;
         chunk.SetBlock(intCoord, null);
         chunk.UpdateMesh();
+        // vvv Adjacent Chunks vvv
         Vector3Int intCoordPosZ = intCoord + Vector3Int.forward;
         Chunk chunkPosZ = GetChunk(intCoordPosZ);
-        if (chunkPosZ && chunkPosZ != chunk) chunkPosZ.UpdateMesh();
+        if (chunkPosZ && chunkPosZ != chunk) // if chunkPosZ == chunk then no adjacent chunk in posZ so no need to update
+            chunkPosZ.UpdateMesh();
         Vector3Int intCoordPosX = intCoord + Vector3Int.right;
         Chunk chunkPosX = GetChunk(intCoordPosX);
-        if (chunkPosX && chunkPosX != chunk) chunkPosX.UpdateMesh();
+        if (chunkPosX && chunkPosX != chunk) // if chunkPosX == chunk then no adjacent chunk in posX so no need to update
+            chunkPosX.UpdateMesh();
         Vector3Int intCoordNegZ = intCoord + Vector3Int.back;
         Chunk chunkNegZ = GetChunk(intCoordNegZ);
-        if (chunkNegZ && chunkNegZ != chunk) chunkNegZ.UpdateMesh();
+        if (chunkNegZ && chunkNegZ != chunk) // if chunkNegZ == chunk then no adjacent chunk in negZ so no need to update
+            chunkNegZ.UpdateMesh();
         Vector3Int intCoordNegX = intCoord + Vector3Int.left;
         Chunk chunkNegX = GetChunk(intCoordNegX);
-        if (chunkNegX && chunkNegX != chunk) chunkNegX.UpdateMesh();
+        if (chunkNegX && chunkNegX != chunk) // if chunkNegX == chunk then no adjacent chunk in negX so no need to update
+            chunkNegX.UpdateMesh();
+        // ^^^ Adjacent Chunks ^^^
     }
 
     public bool PlaceBlock(Vector3 coord, BlockData block)
@@ -140,18 +146,24 @@ public class World : MonoBehaviour
         if (!chunk) return false;
         if (!chunk.SetBlock(intCoord, block)) return false;
         chunk.UpdateMesh();
+        // vvv Adjacent Chunks vvv
         Vector3Int intCoordPosZ = intCoord + Vector3Int.forward;
         Chunk chunkPosZ = GetChunk(intCoordPosZ);
-        if (chunkPosZ && chunkPosZ != chunk) chunkPosZ.UpdateMesh();
+        if (chunkPosZ && chunkPosZ != chunk) // if chunkPosZ == chunk then no adjacent chunk in posZ so no need to update
+            chunkPosZ.UpdateMesh();
         Vector3Int intCoordPosX = intCoord + Vector3Int.right;
         Chunk chunkPosX = GetChunk(intCoordPosX);
-        if (chunkPosX && chunkPosX != chunk) chunkPosX.UpdateMesh();
+        if (chunkPosX && chunkPosX != chunk) // if chunkPosX == chunk then no adjacent chunk in posX so no need to update
+            chunkPosX.UpdateMesh();
         Vector3Int intCoordNegZ = intCoord + Vector3Int.back;
         Chunk chunkNegZ = GetChunk(intCoordNegZ);
-        if (chunkNegZ && chunkNegZ != chunk) chunkNegZ.UpdateMesh();
+        if (chunkNegZ && chunkNegZ != chunk) // if chunkNegZ == chunk then no adjacent chunk in negZ so no need to update
+            chunkNegZ.UpdateMesh();
         Vector3Int intCoordNegX = intCoord + Vector3Int.left;
         Chunk chunkNegX = GetChunk(intCoordNegX);
-        if (chunkNegX && chunkNegX != chunk) chunkNegX.UpdateMesh();
+        if (chunkNegX && chunkNegX != chunk) // if chunkNegX == chunk then no adjacent chunk in negX so no need to update
+            chunkNegX.UpdateMesh();
+        // ^^^ Adjacent Chunks ^^^
         return true;
     }
 
@@ -217,8 +229,8 @@ public class World : MonoBehaviour
                 {
                     Vector3Int coord = new Vector3Int(x, y, z);
                     BlockData block;
-                    if (y == MinHeight) block = m_Bedrock;
-                    else if (height < m_SnowHeight)
+                    if (y == MinHeight) block = m_Bedrock; // Bottom of world
+                    else if (height < m_SnowHeight) // Height is below where snow starts generating
                     {
                         if (y <= height - m_GrassDepth) block = m_Stone;
                         else block = m_Grass;
@@ -245,30 +257,33 @@ public class World : MonoBehaviour
         }
     }
 
+    // Boundries to the world so the player won't walk off
     void GenerateBoundries()
     {
+        int midHeight = (MaxHeight + MinHeight + 1) / 2;
+
         GameObject posZ = new GameObject("PosZBoundry");
         posZ.transform.parent = transform;
         BoxCollider posZBoundry = posZ.AddComponent<BoxCollider>();
-        posZBoundry.center = new Vector3(0f, 0f, m_WorldHalfSize + 0.5f);
+        posZBoundry.center = new Vector3(0f, midHeight, m_WorldHalfSize + 0.5f);
         posZBoundry.size = new Vector3(WorldSize + 2f, MaxHeight - MinHeight + 51f, 1f);
 
         GameObject posX = new GameObject("PosXBoundry");
         posX.transform.parent = transform;
         BoxCollider posXBoundry = posX.AddComponent<BoxCollider>();
-        posXBoundry.center = new Vector3(m_WorldHalfSize + 0.5f, 0f, 0f);
+        posXBoundry.center = new Vector3(m_WorldHalfSize + 0.5f, midHeight, 0f);
         posXBoundry.size = new Vector3(1f, MaxHeight - MinHeight + 51, WorldSize + 2f);
 
         GameObject negZ = new GameObject("NegZBoundry");
         negZ.transform.parent = transform;
         BoxCollider negZBoundry = negZ.AddComponent<BoxCollider>();
-        negZBoundry.center = new Vector3(0f, 0f, -m_WorldHalfSize - 0.5f);
+        negZBoundry.center = new Vector3(0f, midHeight, -m_WorldHalfSize - 0.5f);
         negZBoundry.size = new Vector3(WorldSize + 2f, MaxHeight - MinHeight + 51f, 1f);
 
         GameObject negX = new GameObject("NegXBoundry");
         negX.transform.parent = transform;
         BoxCollider negXBoundry = negX.AddComponent<BoxCollider>();
-        negXBoundry.center = new Vector3(-m_WorldHalfSize - 0.5f, 0f, 0f);
+        negXBoundry.center = new Vector3(-m_WorldHalfSize - 0.5f, midHeight, 0f);
         negXBoundry.size = new Vector3(1f, MaxHeight - MinHeight + 51, WorldSize + 2f);
     }
 }

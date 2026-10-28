@@ -55,9 +55,9 @@ public class Chunk : MonoBehaviour
     public bool SetBlock(Vector3Int coord, BlockData block)
     {
         Vector3Int chunkCoord = ToChunkCoord(coord);
-        if (chunkCoord.x < 0 || chunkCoord.x >= m_ChunkSize) return false;
-        if (chunkCoord.y < 0 || chunkCoord.y >= m_MaxHeight - m_MinHeight + 1) return false;
-        if (chunkCoord.z < 0 || chunkCoord.z >= m_ChunkSize) return false;
+        if (chunkCoord.x < 0 || chunkCoord.x >= m_ChunkSize) return false; // Not inside the chunk
+        if (chunkCoord.y < 0 || chunkCoord.y >= m_MaxHeight - m_MinHeight + 1) return false; // Above max height or below min height
+        if (chunkCoord.z < 0 || chunkCoord.z >= m_ChunkSize) return false; // Not inside the chunk
         m_Blocks[chunkCoord.x, chunkCoord.y, chunkCoord.z] = block;
         return true;
     }
@@ -65,9 +65,9 @@ public class Chunk : MonoBehaviour
     public BlockData GetBlock(Vector3Int coord)
     {
         Vector3Int chunkCoord = ToChunkCoord(coord);
-        if (chunkCoord.x < 0 || chunkCoord.x >= m_ChunkSize) return null;
-        if (chunkCoord.y < 0 || chunkCoord.y >= m_MaxHeight - m_MinHeight + 1) return null;
-        if (chunkCoord.z < 0 || chunkCoord.z >= m_ChunkSize) return null;
+        if (chunkCoord.x < 0 || chunkCoord.x >= m_ChunkSize) return null; // Not inside the chunk
+        if (chunkCoord.y < 0 || chunkCoord.y >= m_MaxHeight - m_MinHeight + 1) return null; // Above max height or below min height
+        if (chunkCoord.z < 0 || chunkCoord.z >= m_ChunkSize) return null; // Not inside the chunk
         return m_Blocks[chunkCoord.x, chunkCoord.y, chunkCoord.z];
     }
 
@@ -101,6 +101,11 @@ public class Chunk : MonoBehaviour
         m_Mesh.RecalculateTangents();
         m_MeshCollider.sharedMesh = m_Mesh;
     }
+
+    // NOTE: For future names like v___ and i___
+    // the numbers indicate start and end on that axis
+    // like v_0_ indicates any vertex on bottom and v_1_ indicates any vertex on top
+    // so it is vxyz and ixyz
 
     void BlockPosY(int x, int y, int z, ref List<Vector3> vertices, ref List<Color> colors, ref List<int> triangles)
     {
